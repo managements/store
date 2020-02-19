@@ -17,6 +17,14 @@ Route::middleware('auth')->group(function () {
             Route::patch('staff/{staff}/restore', 'StaffController@restore')->name('staff.restore');
         });
     });
+
+    Route::middleware('store')->group(function (){
+        Route::namespace('Truck')->group(function (){
+            Route::resource('truck','TruckController')->except(['destroy']);
+        });
+    });
 });
+
+
 
 

@@ -26,6 +26,13 @@
                     </a>
                 </li>
             @endif
+            @if(auth()->user()->is_store || auth()->user()->is_admin)
+                <li>
+                    <a href="{{ route('truck.index') }}" class="btn bg-gray text-left brclr-red">
+                        <i class="fa fa-users"></i> <span>Transporteurs</span>
+                    </a>
+                </li>
+            @endif
         </ul>
     </div>
 </section>

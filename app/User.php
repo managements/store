@@ -24,6 +24,11 @@ class User extends Authenticatable
         return $this->staff->category->category === 'admin';
     }
 
+    public function getIsStoreAttribute()
+    {
+        return $this->staff->category->category === 'store';
+    }
+
     public function staff()
     {
         return $this->belongsTo(Staff::class);

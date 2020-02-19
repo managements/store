@@ -2,7 +2,6 @@
 
 namespace App\Storage;
 
-use App\Account;
 use App\AccountType;
 use App\Assistant;
 use App\Driver;
