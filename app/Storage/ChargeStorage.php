@@ -2,7 +2,6 @@
 
 namespace App\Storage;
 
-use App\Account;
 use App\AccountDetail;
 use App\Charge;
 use App\ChargeTruck;
@@ -13,6 +12,7 @@ class ChargeStorage
 {
     public function add(array $data)
     {
+        // data : truck - payments['cheque']['price'=>,'operation'=>,'mode_id'=>] - details['']
         // charge Truck
         $chargeTruck = ChargeTruck::create([
             'truck_id'      => $data['truck'],
@@ -20,12 +20,15 @@ class ChargeStorage
         ]);
         // payment
         foreach ($data['payments'] as $payment) {
-            $payment = Payment::create([
-                'price'     => $payment['price'],
-                'operation' => (isset($payment['operation'])) ?? null,
-                'mode_id'   => $payment['mode_id']
-            ]);
-            $payment->charge_trucks()->attach($chargeTruck->id);
+            if ($payment['price']) {
+                $payment = Payment::create([
+                    'price'     => $payment['price'],
+                    'operation' => (isset($payment['operation'])) ? $payment['operation'] : null,
+                    'mode_id'   => $payment['mode_id']
+                ]);
+                $payment->charge_trucks()->attach($chargeTruck->id);
+            }
+
         }
 
         $truck = Truck::find($data['truck']);
@@ -47,6 +50,7 @@ class ChargeStorage
                 'account_detail_id' => $accountDetail->id
             ]);
         }
+        return $chargeTruck;
     }
 
     public function sub(ChargeTruck $chargeTruck)
@@ -63,10 +67,7 @@ class ChargeStorage
             $payment->delete();
         }
         // sub chargeTruck
-        $chargeTruck->delete();
+       return $chargeTruck->delete();
     }
 
-    // get
-    //
-    // get par date
 }

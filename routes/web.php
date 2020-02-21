@@ -1,6 +1,4 @@
 <?php
-
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -17,14 +15,34 @@ Route::middleware('auth')->group(function () {
             Route::patch('staff/{staff}/restore', 'StaffController@restore')->name('staff.restore');
         });
     });
-
-    Route::middleware('store')->group(function (){
-        Route::namespace('Truck')->group(function (){
-            Route::resource('truck','TruckController')->except(['destroy']);
-        });
+    // Truck
+    Route::namespace('Truck')->group(function (){
+        // Transport
+        Route::resource('truck','TruckController')->except(['destroy']);
+        // charge
+        Route::resource('charge','ChargeController')->except(['show']);
     });
+
+    // provider
+    Route::namespace('Provider')->group(function (){
+        // links
+        Route::view('provider/links','provider.links')->name('provider.links');
+        // intermediate
+        Route::resource('intermediate', 'IntermediateController')->except(['show', 'destroy']);
+        // Provider
+        Route::resource('provider','ProviderController')->except(['destroy']);
+        // BC
+        Route::resource('bc','BcController')->except(['destroy','index', 'show']);
+        // BL
+        Route::resource('bl','BlController')->except(['destroy','index', 'show']);
+    });
+
+    // Saisie
+    Route::view('saisie','saisie.links')->name('saisie');
+
 });
-
-
-
-
+//todo:: charge
+//todo:: intermediate
+//todo:: provider
+//todo:: prices
+//todo:: clients

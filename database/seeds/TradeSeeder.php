@@ -14,8 +14,8 @@ class TradeSeeder extends Seeder
         // defective
         $data = [
             'payments'      => [
-                'cash'      => ['price' => '180'],
-                'cheque'    => ['price' => '400','operation' => '342654'],
+                'cash'      => ['price' => '150'],
+                'cheque'    => ['price' => '50','operation' => '342654'],
                 'term'      => ['price' => '100','operation' => '342654'],
                 'transfer'  => ['price' => '200','operation' => '8635456']
             ],

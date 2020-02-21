@@ -37,7 +37,7 @@ class StaffStorage
             ]);
         }
         if ($assistant = $staff->assisted_truck()->where('to',null)->first()) {
-            $driver->update([
+            $assistant->update([
                 'to'    => now()
             ]);
         }

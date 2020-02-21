@@ -1,15 +1,20 @@
 @extends('layouts.app')
 @section('content')
-    <div class="content container-fluid">
+    <div class="content container-fluid px-5">
         <form action="{{ route('truck.store') }}" method="POST">
             <div class="row">
                 @csrf
-                <div class="col-md-6 offset-3">
+                <div class="col-md-6 ">
+                <div class="card pb-4 mt-3">
+                    <div class="card-header">
+                        <a href="{{ route('truck.index') }}"><i class="fas fa-arrow-left"></i></a>  Créer un nouveau transport
+                    </div>
+                    <div class="card-body">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="registered">n° d'imatrucle</label>
+                            <label for="registered">N° d'imatrucle</label>
                             <input type="text" name="registered" id="registered" value="{{ old('registered') }}"
-                                   placeholder="n° d'imatrucle" class="form-control">
+                                  class="form-control">
                             @if($errors->has('registered'))
                                 <span class="text-danger">{{ $errors->first('registered') }}</span>
                             @endif
@@ -76,6 +81,7 @@
                     </div>
                     <div class="col-md-6 offset-6 text-right">
                         <button type="submit" class="btn btn-primary">Créer</button>
+                    </div>
                     </div>
                 </div>
 

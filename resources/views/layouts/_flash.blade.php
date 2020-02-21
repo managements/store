@@ -1,26 +1,37 @@
 <div class="container">
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <script src="{{ asset('js/sweetalert2@9.js') }}" type="text/javascript"></script>
+    <script>
+       Swal.fire({
+            position: 'top-center',
+            icon: 'success',
+            title: '{{ session("success") }}',
+            showConfirmButton: false,
+            timer: 5500
+        });
+    </script>
     @endif
     @if(session('danger'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('danger') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+        <script src="{{ asset('js/sweetalert2@9.js') }}" type="text/javascript"></script>
+        <script>
+           Swal.fire({
+                position: 'top-center',
+                icon: 'error',
+                title: '{{ session("danger") }}',
+                showConfirmButton: false,
+                timer: 5500
+            });
+        </script>
     @endif
     @if(session('warning'))
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ session('warning') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+        <script>
+            Swal.fire({
+                 position: 'top-center',
+                 icon: 'warning',
+                 title: '{{ session("warning") }}',
+                 showConfirmButton: false,
+                 timer: 5500
+             });
+         </script>
     @endif
 </div>

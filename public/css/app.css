@@ -206,6 +206,8 @@ input[type=number]::-webkit-inner-spin-button {
     font-weight: bold;
     position: relative;
     left: 8px;
+    border: none;
+    border-bottom: 6px outset;
 }
 .adm .main-sidebar .sidebar-menu li a i{
     margin-left: 5px;
@@ -233,21 +235,27 @@ input[type=number]::-webkit-inner-spin-button {
     cursor: inherit;
 }
 
-.adm .main-sidebar .sidebar-menu li a.brclr-red{
-    border-bottom: 6px outset #dc5e5e;
+.brclr-red{
+    border-color: #ff8758  !important;
 }
-.adm .main-sidebar .sidebar-menu li a.brclr-blue{
-    border-bottom: 6px outset #5ea9dc;
+.brclr-blue{
+    border-color: #5ea9dc !important;
 }
-
-.adm .main-sidebar .sidebar-menu li a.brclr-green{
-    border-bottom: 6px outset #5edc61;
+.brclr-green{
+    border-color: #5edc61 !important;
 }
-.adm .main-sidebar .sidebar-menu li a.brclr-orange{
-    border-bottom: 6px outset #ffd241;
+.brclr-orange{
+    border-color: #ffd241 !important;
 }
-
-
+.brclr-perble{
+    border-color: #ff00d2 !important;
+}
+.brclr-bluegrad{
+    border-color: #2521daf7 !important;
+}
+.no-brclr{
+    border: none !important;
+}
 .adm .main-sidebar .sidebar-menu li a:active{
     opacity: 0.8;
     background: linear-gradient(#ffffff,#d9d9d9);
@@ -272,20 +280,21 @@ input[type=number]::-webkit-inner-spin-button {
     padding: 0 20px;
 }
 .page_links a{
-    color: #fff;
-    /*min-height: 150px;*/
+    color: #53696b;
     min-width: 231px;
-    padding: 70px 0;
-    background: #4792a2;
+    background: linear-gradient(white, #d4d4d4);
     display: block;
     text-align: center;
-    border: 9px outset #59a8b9;
     font-size: 18px;
     font-weight: bold;
     box-shadow: 0 3px 6px #00000061;
     text-decoration: none;
-    margin: 0 auto 25px;
+    margin: 0 auto 53px;
     transition: 0.3s all ease;
+    width: 80%;
+    height: 185px;
+    padding-top: 52px;
+    border-bottom: 12px solid;
 }
 .page_links a i{
     font-size: 35px;
@@ -542,22 +551,21 @@ table tr td{
     text-align: center;
 }
 .mode_paiement_title{
-    background: #262f42;
+    background: #2e796e;
     color: #fff;
     padding: 10px;
     text-align: center;
     width: 223px;
     margin-bottom: 14px;
-    margin-left: 13%
 }
 .btn-imprimer{
     width: 113px;
     margin-top: 30px;
     padding: 6px;
     float: right;
-    color: #262f42;
+    color: #fff;
     font-weight: bold;
-    background-color: #84caca;
+    background-color: #2e796e;
     float: right;
     outline: none;
 }
@@ -678,11 +686,15 @@ body > #contentloading{
 
 .form-control, input.form-control:focus{
     box-shadow: 0 3px 6px inset #00000030;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9 !important;
 }
 .card-header{
     background-color: rgb(68, 130, 120);
     color: #fff;
+}
+.card-header a{
+    color: #fff;
+    text-decoration: none;
 }
 .table{
     background: #ffffff;
@@ -752,12 +764,15 @@ table .btn.btn-danger:hover{
 .table tr td{
     padding:9px 12px;
     vertical-align: middle;
+    text-align: left;
 }
 .table th{
     text-align: left;
     text-transform: uppercase;
 }
-
+.table .actions{
+    text-align: center;
+}
 .btn-cst{
     padding: 10px;
     margin: 5px auto;

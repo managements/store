@@ -10,8 +10,8 @@ class CreateTradesTable extends Migration
     {
         Schema::create('trades', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('slug_inv');
-            $table->string('inv');
+            $table->string('slug_inv')->nullable();
+            $table->string('inv')->nullable();
             $table->unsignedBigInteger('ht')->nullable();
             $table->unsignedBigInteger('tva')->nullable();
             $table->unsignedBigInteger('ttc')->nullable();

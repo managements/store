@@ -1,12 +1,17 @@
 @extends('layouts.app')
 @section('content')
-    <div class="content container-fluid">
+    <div class="content container-fluid px-5">
         <form action="{{ route('truck.update',compact('truck')) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="row">
-                <div class="col-md-6 offset-3">
-                    <div class="col-md-12">
+                <div class="col-md-12 ">
+                <div class="card pb-4 mt-3">
+                        <div class="card-header">
+                            <a href="{{ route('truck.show',compact('truck')) }}"><i class="fas fa-arrow-left"></i></a> Mettre à jour de la truck
+                        </div>
+                    <div class="card-body row">         
+                    <div class="col-md-6 px-5">
                         <div class="form-group">
                             <label for="registered">n° d'imatrucle</label>
                             <input type="text" name="registered" id="registered"
@@ -17,7 +22,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6  px-5">
                         <div class="form-group">
                             <label for="transporter">Transport</label>
                             <select name="transporter" id="transporter" class="form-control">
@@ -42,7 +47,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6  px-5">
                         <div class="form-group">
                             <label for="assistant">Assistant : </label>
                             <select name="assistant" id="assistant" class="form-control">
@@ -59,7 +64,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6  px-5">
                         <div class="form-group">
                             <label for="driver">Driver : </label>
                             <select name="driver" id="driver" class="form-control">
@@ -76,7 +81,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6  px-5">
                         <div class="form-group">
                             <label for="assurance">Date d'expiration Assurance :</label>
                             <input type="date" name="assurance" id="assurance" value="{{ (old('assurance')) ?? $truck->assurance }}" placeholder="Date d'expiration Assurance :" class="form-control">
@@ -85,7 +90,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6  px-5">
                         <div class="form-group">
                             <label for="visit_technique">visite technique :</label>
                             <input type="date" name="visit_technique" id="visit_technique" value="{{ (old('visit_technique')) ?? $truck->visit_technique }}" placeholder="visite technique :" class="form-control">
@@ -94,9 +99,11 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-6 offset-6 text-right">
-                        <button type="submit" class="btn btn-primary">Modifier</button>
+                    <div class="col-md-6 offset-6 px-5 text-right">
+                        <button type="submit" class="btn btn-primary btn-cst float-right"><i class="fas fa-file-download"></i>   Enregistrer </button>
                     </div>
+                         
+                </div>
                 </div>
             </div>
         </form>

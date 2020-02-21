@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Truck\TruckRequest;
 use App\Storage\TruckStorage;
 use App\Truck;
-use Illuminate\Http\Request;
 
 class TruckController extends Controller
 {
@@ -65,7 +64,9 @@ class TruckController extends Controller
             ['to', null],
             ['truck_id', $truck->id]
         ])->first();
-        return view('truck.edit',compact('truck',"current_assistant","current_driver","drivers","assistants"));
+        return view('truck.edit',
+            compact('truck',"current_assistant","current_driver","drivers","assistants")
+        );
 
     }
 

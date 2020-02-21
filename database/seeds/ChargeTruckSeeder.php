@@ -13,10 +13,6 @@ class ChargeTruckSeeder extends Seeder
             'payments'  =>
                 [
                    [
-                       'price'         => 500,
-                       'mode_id'       => Mode::where('mode','cash')->first()->id
-                   ],
-                   [
                     'price'         => 600,
                     'operation'     => 13456,
                     'mode_id'       => Mode::where('mode','cheque')->first()->id

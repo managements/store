@@ -63,7 +63,7 @@
                                             @foreach($categories as $category)
                                                 <option value="{{ $category->id }}"
                                                         {{ (old('category') == $category->id) ? 'selected' : '' }}>
-                                                    {{ $category->category }}
+                                                    {{ __('categories.' . $category->category) }}
                                                 </option>
                                             @endforeach
                                         </select>

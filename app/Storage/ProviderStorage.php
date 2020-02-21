@@ -5,9 +5,14 @@ namespace App\Storage;
 use App\Account;
 use App\AccountType;
 use App\Partner;
+use App\Product;
+use App\Size;
+use App\Stock;
 
 class ProviderStorage
 {
+    private $retained = [];
+    private $retainedTotal = 0;
     public function add(array $data)
     {
         // create new account
@@ -43,6 +48,61 @@ class ProviderStorage
 
     public function update(Partner $provider, array $data)
     {
+        $account = Account::where([
+            'account'           => $provider->name,
+            'account_type_id'   => AccountType::where('type', 'provider')->first()->id
+        ])->first();
+        $account->update(['account'    => $data['name']]);
         return $provider->update($data);
+    }
+
+    public function account(Partner $provider)
+    {
+        $account = Account::where([
+            'account'           => $provider->name,
+            'account_type_id'   => AccountType::where('type', 'provider')->first()->id
+        ])->first();
+        return $account->details;
+    }
+
+    public function retained(Partner $provider)
+    {
+        // size
+        $sizes = Size::all();
+        // data ['size'=>['qt','price']]
+        foreach ($sizes as $size) {
+            $products = $size->products;
+            foreach ($products as $product) {
+                if ($product->type->type === 'consign') {
+                    $stock = Stock::where([
+                        ['product_id', $product->id],
+                        ['partner_id', $provider->id]
+                    ])->first();
+                    if($stock) {
+                        $price = $product->prices()->orderBy('id','desc')->first();
+                        $price_buy = $price->buy * $stock->qt;
+                        $this->retainedTotal = $this->retainedTotal + $price_buy;
+                        $this->retained[$size->size] = ['qt' => $stock->qt, 'price' => $price_buy];
+                    }
+                }
+            }
+        }
+        $this->retained['total'] = $this->retainedTotal;
+        return $this->retained;
+    }
+
+    public function sold(Partner $provider)
+    {
+        $account = Account::where([
+            'account'           => $provider->name,
+            'account_type_id'   => AccountType::where('type', 'provider')->first()->id
+        ])->first();
+        $cr = $account->details()->sum('cr');
+        $db = $account->details()->sum('db');
+        $sold = $db - $cr;
+        if($sold > 0) {
+            return "<span class='text-success'>$sold DB</span>";
+        }
+        return "<span class='text-danger'>$sold CR</span>";
     }
 }

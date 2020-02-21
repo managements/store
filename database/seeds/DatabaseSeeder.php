@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
         // TODO:: delete before production
         $this->call([
             StockSeeder::class,
-            PriceSeeder::class
+            PriceSeeder::class,
+            IntermediateSeeder::class
         ]);
         $this->call(TradeSeeder::class);
     }
