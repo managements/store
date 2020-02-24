@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('bl_id')->nullable();
             $table->unsignedBigInteger('bc_id')->nullable();
+            $table->unsignedBigInteger('trade_id')->nullable();
             $table->timestamps();
         });
 

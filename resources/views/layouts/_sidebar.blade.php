@@ -45,6 +45,11 @@
                     <i class="fa fa-users"></i> <span>Saisie</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('transaction.links') }}" class="btn bg-gray text-left brclr-red">
+                    <i class="fa fa-users"></i> <span>Achat et Vente</span>
+                </a>
+            </li>
         </ul>
     </div>
 </section>

@@ -36,6 +36,11 @@ Route::middleware('auth')->group(function () {
         // BL
         Route::resource('bl','BlController')->except(['destroy','index', 'show']);
     });
+    // Trade
+    Route::namespace('Trade')->group(function (){
+        Route::view('transaction/links','trade.link')->name('transaction.links');
+        Route::resource('transaction','TradeController')->except(['destroy','show']);
+    });
 
     // Saisie
     Route::view('saisie','saisie.links')->name('saisie');

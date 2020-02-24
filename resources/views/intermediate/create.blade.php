@@ -8,7 +8,7 @@
                     @csrf
                     <div class="col-xs-12">
                         <div class="form-group">
-                            <label for="name">Nom de L'intermédiaire :</label>
+                            <label for="name">Raison Sociale :</label>
                             <input type="text" name="name" id="name" value="{{ old('name') }}" class="form-control">
                             @if($errors->has('name'))
                                 <span class="text-danger">{{ $errors->first('name') }}</span>

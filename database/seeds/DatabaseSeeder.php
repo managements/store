@@ -28,6 +28,6 @@ class DatabaseSeeder extends Seeder
             PriceSeeder::class,
             IntermediateSeeder::class
         ]);
-        $this->call(TradeSeeder::class);
+        //$this->call(TradeSeeder::class);
     }
 }

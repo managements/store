@@ -14,25 +14,25 @@ class TradeSeeder extends Seeder
         // defective
         $data = [
             'payments'      => [
-                'cash'      => ['price' => '150'],
-                'cheque'    => ['price' => '50','operation' => '342654'],
-                'term'      => ['price' => '100','operation' => '342654'],
-                'transfer'  => ['price' => '200','operation' => '8635456']
+                ['price' => '150', 'mode_id' => 1],
+                ['price' => '50','operation' => '342654','mode_id' => 2],
+                ['price' => '200','operation' => '8635456','mode_id' => 3],
+                ['price' => '100','operation' => '342654','mode_id' => 4]
             ],
-            'partner'      => 1,
-            'buy'           => [
-                'consignees'    => [9 => 10],
+            'partner'       => 1,
+            'products'      => [
+                'buy'           => [
+                    'consign'       => [9 => 10],
+                ],
+                'sale'          => [
+                    'gaz'           => [5 => 10],
+                    'consign'       => [6 => 10],
+                ],
             ],
-            'sale'          => [
-                'gazes'         => [5 => 10],
-                'consignees'    => [6 => 10],
-            ],
+
         ];
         // sale
         $trade= new TradeStorage();
         $trade->trade($data);
-        // buy
-        // bc
-        // bl
     }
 }

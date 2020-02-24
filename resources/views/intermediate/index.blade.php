@@ -4,15 +4,15 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="float-right">
-                    <a href="{{ route('intermediate.create') }}" class="btn btn-cst"> <i class="fas fa-plus"></i> Ajouté</a>
+                    <a href="{{ route('intermediate.create') }}" class="btn btn-cst"> <i class="fas fa-plus"></i> Ajouté un intermédiaire</a>
                 </div>
             </div>
         </div>
-       <b>Liste des Intermédiaire :</b>
+       <b>Liste des Intermediaires :</b>
             <table class="table">
                 <thead>
                 <tr>
-                    <th>intermediate</th>
+                    <th>Intermediaires</th>
                     <th class="actions">Action</th>
                 </tr>
                 </thead>

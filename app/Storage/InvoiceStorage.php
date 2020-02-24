@@ -11,7 +11,7 @@ class InvoiceStorage
     public function increment(): array
     {
         // slug inv month-year-inv
-        $trade = Trade::latest()->first();
+        $trade = Trade::where('slug_inv','!=',null)->orderby('id','desc')->first();
         if ($trade) {
             $inc = explode('-',$trade->slug_inv)[2];
         }

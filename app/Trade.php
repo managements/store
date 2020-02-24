@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Trade extends Model
 {
     protected $fillable = [
-        'slug_inv', 'inv', 'ht', 'tva', 'ttc', 'partner_id', 'intermediate_id', 'truck_id', 'creator_id'
+        'slug_inv', 'inv', 'ht', 'tva', 'ttc', 'partner_id', 'intermediate_id', 'truck_id', 'creator_id', 'created_at'
     ];
 
     public function account_details()
@@ -55,8 +55,23 @@ class Trade extends Model
         return $this->hasOne(Bl::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function claim_details()
     {
         return $this->hasMany(ClaimDetail::class);
+    }
+
+    public function transaction_buy()
+    {
+        return $this->hasOne(Transaction::class,'buy_id');
+    }
+
+    public function transaction_sale()
+    {
+        return $this->hasOne(Transaction::class,'sale_id');
     }
 }

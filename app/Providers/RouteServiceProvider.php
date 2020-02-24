@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\ChargeTruck;
+use App\Transaction;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Route::model('trade',Transaction::class);
         parent::boot();
     }
 

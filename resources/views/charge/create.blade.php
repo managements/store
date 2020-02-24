@@ -30,17 +30,13 @@
                 <tbody style="background: #7cb3b9;">
                     <tr>
                         <td>
-                            <div class="col-md-12 ">
-                                <div class="form-group">
-                                    <select name="details[0][charge]" title="charge" id="charge" class="form-control">
-                                        @foreach($charges as $charge)
-                                            <option value="{{ $charge->id }}">
-                                                {{ $charge->charge }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                            <select name="details[0][charge]" title="charge" id="charge" class="form-control" style="border-radius:15px">
+                                @foreach($charges as $charge)
+                                    <option value="{{ $charge->id }}">
+                                         {{ $charge->charge }}
+                                      </option>
+                                 @endforeach
+                            </select>
                         </td>
                         <td>
                             <input type="text" name="details[0][label]" class="btn-spanen col-md-12" placeholder="label" required>

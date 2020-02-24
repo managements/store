@@ -2,12 +2,12 @@
 
 @section('content')
     <div class="container px-5">
-        <div class="row mb-5">
+        <div class="row ">
             @if(auth()->user()->is_admin)
                 <div class="col-md-12">
                     <div class="float-right">
                         <a href="{{ route('provider.create') }}" class="btn btn-success text-right btn-cst">
-                            <i class="fas fa-plus"></i> &nbsp; Ajouter Une nouveau Fournisseur
+                            <i class="fas fa-plus"></i> &nbsp; Ajouter un Fournisseur
                         </a>
                     </div>
                 </div>
@@ -19,7 +19,6 @@
                 <tr>
                     <th class="text-left">Compte</th>
                     <th class="text-left">Fournisseur</th>
-                    <th class="text-left">Gérant</th>
                     <th>Chiffre d'affaire</th>
                     <th class="actions">Action</th>
                 </tr>
@@ -30,25 +29,20 @@
                         <tr>
                             <td class="text-left">{{ $provider->account }}</td>
                             <td class="text-left">{{ $provider->name }}</td>
-                            <td class="text-left">{{ $provider->speaker }}</td>
                             <td>{{ $provider->turnover }} MAD</td>
                             <td  class="actions">
                                 <a href="{{ route('provider.show',compact('provider')) }}"
-                                   class="btn btn-success btn-sm"> <i class="fas fa-eye"></i> Compte de Fournisseur</a>
+                                   class="btn btn-m-blue btn-sm"> <i class="fas fa-bars"></i> Historique</a>
+                                   @if($provider->provider === 1)
+                                   <a href="#"
+                                      class="btn btn-m-red btn-sm"> <i class="fas fa-eye"></i> Créances </a>
+                                    @endif
+                                   @if(auth()->user()->is_admin)
+                                   <a href="{{ route('provider.edit',compact('provider')) }}"
+                                      class="btn btn-success btn-sm"> <i class="fas fa-edit"></i> </a>
+                                    @endif
                             </td>
-                            <td>
-                                @if($provider->provider === 1)
-                                    <a href="#"
-                                       class="btn btn-success btn-sm"> <i class="fas fa-eye"></i> Liste des Paiements
-                                        Créances</a>
-                                @endif
-                            </td>
-                            <td>
-                                @if(auth()->user()->is_admin)
-                                    <a href="{{ route('provider.edit',compact('provider')) }}"
-                                       class="btn btn-success btn-sm"> <i class="fas fa-edit"></i> Edit</a>
-                                @endif
-                            </td>
+                            
                         </tr>
                     @endforeach
                 @else

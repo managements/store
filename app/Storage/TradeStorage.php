@@ -4,8 +4,6 @@ namespace App\Storage;
 
 
 use App\Account;
-use App\AccountDetail;
-use App\AccountType;
 use App\Order;
 use App\Partner;
 use App\Payment;
@@ -14,6 +12,8 @@ use App\Product;
 use App\Remise;
 use App\Stock;
 use App\Trade;
+use App\Transaction;
+use Carbon\Carbon;
 
 class TradeStorage
 {
@@ -24,247 +24,269 @@ class TradeStorage
     private $buyConsign = 0;
     private $saleConsign = 0;
     private $saleGaz = 0;
+    private $tradeSale = null;
+    private $tradeBuy = null;
+    private $slug_inv = null;
+    private $inv = null;
+    private $created_at = null;
 
-    public function trade(array $data)
+    private function validate(array $data)
     {
-        // if isset buy - sale
-        $this->validation($data);
-        // sale
-        $this->sale($data);
-        // buy
-        $this->buy($data);
-        // payment
-        $this->payment($data);
-    }
-
-    private function payment(array $data)
-    {
-        $cheque = Payment::create([
-            'price'         => $data['payments']['cheque']['price'],
-            'operation'     => $data['payments']['cheque']['operation'] ,
-            'mode_id'       => 2
-        ]);
-        $transfer = Payment::create([
-            'price'         => $data['payments']['transfer']['price'],
-            'operation'     => $data['payments']['transfer']['operation'] ,
-            'mode_id'       => 3
-        ]);
-        $cash = Payment::create([
-            'price'         => $data['payments']['cash']['price'],
-            'mode_id'       => 1
-        ]);
-        $term = Payment::create([
-            'price'         => $data['payments']['term']['price'],
-            'mode_id'       => 4
-        ]);
-
-        foreach ($this->trades as $trade) {
-            $term->trades()->attach($trade);
-            $cash->trades()->attach($trade);
-            $transfer->trades()->attach($trade);
-            $cheque->trades()->attach($trade);
-       }
-       // todo::account
-    }
-
-    private function createTrade(array $data,?bool $sale = false)
-    {
-        $invoice = new InvoiceStorage();
-        $create = array_merge(
-            ['partner_id' => $data['partner']],
-            ['creator_id' => auth()->id()]
-        );
-        if($sale) {
-            $create = array_merge(
-                $create,
-                $invoice->increment()
-            );
+        foreach ($data['products']['sale']['gaz'] as $product_id => $qt) {
+            if (!is_null($qt) && $qt > 0) {
+                $this->saleGaz = 1;
+            }
         }
-        $trade = Trade::create($create);
+        foreach ($data['products']['sale']['consign'] as $product_id => $qt) {
+            if (!is_null($qt) && $qt > 0) {
+                $this->saleConsign = 1;
+            }
+        }
+        foreach ($data['products']['buy']['consign'] as $product_id => $qt) {
+            if (!is_null($qt) && $qt > 0) {
+                $this->buyConsign = 1;
+            }
+        }
+    }
+
+    public function add(array $data)
+    {
+        $this->validate($data);
+        if ($this->saleGaz || $this->saleConsign || $this->buyConsign){
+            if($this->saleGaz || $this->saleConsign) {
+                $this->addSale($data);
+            }
+            if ($this->buyConsign) {
+                $this->addBuy($data);
+            }
+            $this->addPayments($data);
+            return $this->addTransaction();
+        }
+        return null;
+    }
+
+    private function addTransaction()
+    {
+        return Transaction::create([
+            'sale_id'       => $this->tradeSale,
+            'buy_id'        => $this->tradeBuy
+        ]);
+    }
+
+    private function addSale(array $data)
+    {
+        $trade = $this->addTrade($data,true);
+        $this->addSaleOrders($data['products']['sale']['consign'],$trade);
+        $this->addSaleOrders($data['products']['sale']['gaz'],$trade);
+        $trade->update([
+            'ht'        => $this->ht,
+            'tva'       => $this->tva,
+            'ttc'       => $this->ttc,
+        ]);
+    }
+
+    private function addBuy(array $data)
+    {
+        $trade = $this->addTrade($data);
+        $this->addBuyOrders($data['products']['buy']['consign'],$trade);
+        $trade->update([
+            'ht'        => $this->ht,
+            'tva'       => $this->tva,
+            'ttc'       => $this->ttc,
+        ]);
+    }
+
+    private function inv()
+    {
+        if (!$this->inv) {
+            $invoice = new InvoiceStorage();
+            $slug = $invoice->increment();
+            $this->inv = $slug['inv'];
+            $this->slug_inv = $slug['slug_inv'];
+        }
+    }
+
+    private function addTrade(array $data, $sale = null)
+    {
+        $this->tradeZero();
+        $inv = null;
+        $slug_inv = null;
+        if (!$sale) {
+            $this->inv();
+            $inv = $this->inv;
+            $slug_inv = $this->slug_inv;
+        }
+        $trade = Trade::create([
+            'slug_inv'              => $slug_inv,
+            'inv'                   => $inv,
+            'ht'                    => 0,
+            'tva'                   => 0,
+            'ttc'                   => 0,
+            'partner_id'            => $data['partner'],
+            'creator_id'            => auth()->id(),
+            'created_at'            => ($this->created_at) ? $this->created_at : now()
+        ]);
+        if ($sale) {
+            $this->tradeSale = $trade->id;
+        }
+        else{
+            $this->tradeBuy = $trade->id;
+        }
         $this->trades[] = $trade->id;
         return $trade;
     }
 
-    public function sale(array $data)
+    private function tradeZero()
     {
-        if ($this->saleGaz || $this->saleConsign) {
-            // trade
-            $trade = $this->createTrade($data,true);
-            $this->ht = 0;
-            $this->tva = 0;
-            $this->ttc = 0;
-            // sale gaz
-            if ($this->saleGaz) {
-                $this->saleProduct($data['sale']['gazes'],$data['partner']);
+        $this->ht = 0;
+        $this->tva = 0;
+        $this->ttc = 0;
+    }
+
+    private function addSaleOrders(array $data,Trade $trade)
+    {
+        foreach ($data as $size => $products) {
+            foreach ($products as $product_id => $qt) {
+                if (!is_null($qt) && $qt > 0) {
+                    $product = Product::find($product_id);
+                    $price = $product->prices()->orderby('id','desc')->first();
+                    $ht = $qt * $price->sale;
+                    $tva = $ht * $product->tva / 100;
+                    $ttc = $ht + $tva;
+                    $this->ht = $this->ht + $ht;
+                    $this->tva = $this->tva + $tva;
+                    $this->ttc = $this->ttc + $ttc;
+                    $product->orders()->create([
+                        'qt'        => $qt,
+                        'ht'        => $ht,
+                        'tva'       => $tva,
+                        'ttc'       => $ttc,
+                        'trade_id'  => $trade->id
+                    ]);
+                    $stock = Stock::where([
+                        ['store_id', 1],
+                        ['product_id', $product_id],
+                    ])->first();
+                    $stock->update([
+                        'qt'    => $stock->qt - $qt
+                    ]);
+                }
             }
-            // sale consign
-            if ($this->saleConsign) {
-                $this->saleProduct($data['sale']['consignees'],$data['partner']);
-            }
-            // price Trade
-            $trade->update([
-                'ht'        => $this->ht,
-                'tva'       => $this->tva,
-                'ttc'       => $this->ttc
-            ]);
         }
     }
 
-    private function saleProduct(array $data,int $partner_id)
+    private function addBuyOrders(array $data,Trade $trade)
     {
-        foreach ($data as $key => $gaze) {
-            // create orders
-            $this->saleOrder($key, $gaze,$partner_id);
-            // sub stock gaz
+        foreach ($data as $size => $products) {
+            foreach ($products as $product_id => $qt) {
+                if (!is_null($qt) && $qt > 0) {
+                    if (!is_null($qt) && $qt > 0) {
+                        $product = Product::find($product_id);
+                        $price = $product->prices()->orderby('id', 'desc')->first();
+                        $ht = $qt * $price->buy;
+                        $tva = $ht * $product->tva / 100;
+                        $ttc = $ht + $tva;
+                        $this->ht = $this->ht + $ht;
+                        $this->tva = $this->tva + $tva;
+                        $this->ttc = $this->ttc + $ttc;
+                        $product->orders()->create([
+                            'qt' => $qt, 'ht' => $ht, 'tva' => $tva, 'ttc' => $ttc, 'trade_id' => $trade->id
+                        ]);
+                        $stock = Stock::where([
+                            ['store_id', 1], ['product_id', $product_id],
+                        ])->first();
+                        $stock->update([
+                            'qt' => $stock->qt + $qt
+                        ]);
+                    }
+                }
+            }
+        }
+    }
+
+    private function addPayments(array $data)
+    {
+        foreach ($data['payments'] as $payment) {
+            if ($payment['price']) {
+                $payment = Payment::create([
+                    'price'     => $payment['price'],
+                    'operation' => (isset($payment['operation'])) ? $payment['operation'] : null,
+                    'mode_id'   => $payment['mode_id']
+                ]);
+                foreach ($this->trades as $trade) {
+                    $payment->trades()->attach($trade);
+                }
+            }
+        }
+    }
+
+    public function updated(array $data,Transaction $transaction)
+    {
+        $sale = $transaction->sale;
+        $buy = $transaction->buy;
+        if ($sale) {
+            // payments
+            $this->subPayments($sale);
+            $this->subSale($sale);
+        }
+        else{
+            // payments
+            $this->subPayments($sale);
+        }
+        if ($buy) {
+            $this->subBuy($buy);
+        }
+        $transaction->delete();
+        return $this->add($data);
+    }
+
+    private function subBuy(Trade $trade)
+    {
+        $this->subBuyOrders($trade->orders);
+        $this->slug_inv = $trade->slug_inv;
+        $this->inv = $trade->inv;
+        $this->created_at = $trade->created_at;
+        $trade->delete();
+    }
+
+    private function subBuyOrders($orders)
+    {
+        foreach ($orders as $order) {
+            $stock = Stock::where([
+                ['store_id', 1], ['product_id', $order->product_id],
+            ])->first();
+            $stock->update([
+                'qt' => $stock->qt - $order->qt
+            ]);
+            $order->delete();
+        }
+    }
+
+    private function subSale(Trade $trade)
+    {
+        $this->subSaleOrders($trade->orders);
+        $trade->delete();
+    }
+
+    private function subSaleOrders($orders)
+    {
+        foreach ($orders as $order) {
             $stock = Stock::where([
                 ['store_id', 1],
-                ['product_id', $key]
+                ['product_id', $order->product_id],
             ])->first();
-            $stock->update(['qt' => $stock->qt - $gaze]);
-        }
-    }
-
-    private function saleOrder(int $product_id, int $qt,$client_id)
-    {
-        $product = Product::find($product_id);
-        $price = $product->prices()->orderBy('id','desc')->first();
-        $ht = $price->sale * $qt;
-        $this->ht = $this->ht + $ht;
-        $tva = $ht * $product->tva / 100;
-        $this->tva = $this->tva + $tva;
-        $ttc = $ht + $tva;
-        $this->ttc = $this->ttc + $ttc;
-        $order = Order::create([
-            'qt'            => $qt,
-            'ht'            => $ht,
-            'tva'           => $tva,
-            'ttc'           => $ttc,
-            'product_id'    => $product_id
-        ]);
-        $this->saleAccount($order,$product,$price,$client_id);
-        return $order;
-    }
-
-    private function saleAccount(Order $order,Product $product,Price $price,int $client_id)
-    {
-        // create account store
-        $account = Account::where('account','store')->first();
-        $account->details()->create([
-            'label'     => "Vente Particulier " . $product->type->type,
-            'detail'    => $product->size->size,
-            'qt_out'    => $order->qt,
-            'cr'        => $price->buy * $order->qt
-        ]);
-        // create account Client
-        $client = Partner::find($client_id);
-        $account = Account::where('account',$client->name)->first();
-        $account->details()->create([
-            'label'         => "Achat " . $order->product->type->type,
-            'detail'        => $order->product->size->size,
-            'qt_enter'      => $order->qt,
-            'db'            => $order->ttc
-        ]);
-        // create account tva
-        $account = Account::where('account','tva')->first();
-        $detail_tva = $account->details()->create([
-            'label'     => "Vente Particulier " . $order->product->type->type,
-            'detail'    => $order->product->size->size,
-            'cr'        => $order->tva
-        ]);
-        $order->account_details()->attach($detail_tva->id);
-        // create account gain_loss
-        $account = Account::where('account','gain_loss')->first();
-        $buy = $order->product->prices()->orderBy('id','desc')->first();
-        $account->details()->create([
-            'label'     => "Vente Particulier " . $order->product->type->type,
-            'detail'    => $order->product->size->size,
-            'qt_out'    => $order->qt,
-            'cr'        => $order->ht - ($order->qt * $buy->buy)
-        ]);
-        // discount
-        $discount = Remise::where([
-            ['product_id', $product->id],
-            ['partner_id', $client_id]
-        ])->first();
-        if (!is_null($discount) && $discount->remise > 0) {
-            $account->details()->create([
-                'label'     => "Vente Particulier " . $order->product->type->type . ' ' . $order->product->size->size,
-                'detail'    => "Réduction",
-                'db'        => $order->ttc - ($discount->remise * $order->qt)
+            $stock->update([
+                'qt'    => $stock->qt + $order->qt
             ]);
+            $order->delete();
         }
     }
 
-    private function buyOrder(int $product_id, int $qt, int $client_id)
+    private function subPayments(Trade $trade)
     {
-        $product = Product::find($product_id);
-        $price = $product->prices()->orderBy('id','desc')->first();
-        $ht = $price->buy * $qt;
-        $this->ht = $this->ht + $ht;
-        $tva = $ht * $product->tva / 100;
-        $this->tva = $this->tva + $tva;
-        $ttc = $ht + $tva;
-        $this->ttc = $this->ttc + $ttc;
-        $order = Order::create([
-            'qt'            => $qt,
-            'ht'            => $ht,
-            'tva'           => $tva,
-            'ttc'           => $ttc,
-            'product_id'    => $product_id
-        ]);
-        // todo::account details
-        return $order;
-    }
-
-    private function buyProduct(array $data, int $partner_id)
-    {
-        foreach ($data as $key => $consign) {
-            // create orders
-            $this->buyOrder($key, $consign,$partner_id);
-            // add stock
-            $stock = Stock::where([
-                ['store_id', 1],
-                ['product_id', $key]
-            ])->first();
-            $stock->update(['qt' => $stock->qt + $consign]);
-        }
-    }
-
-    private function buy(array $data)
-    {
-        // trade
-        $trade = $this->createTrade($data);
-        // buy consign
-        if($this->buyConsign){
-            $this->ht = 0;
-            $this->tva = 0;
-            $this->ttc = 0;
-            $this->buyProduct($data['buy']['consignees'],$data['partner']);
-            // price Trade
-            $trade->update([
-                'ht'        => $this->ht,
-                'tva'       => $this->tva,
-                'ttc'       => $this->ttc
-            ]);
-        }
-    }
-
-    private function validation(array $data)
-    {
-        foreach ($data['sale']['gazes'] as $key => $value) {
-            if(!is_null($value)){
-                $this->saleGaz = 1;
-            }
-        }
-        foreach ($data['sale']['consignees'] as $key => $value) {
-            if(!is_null($value)){
-                $this->saleConsign = 1;
-            }
-        }
-        foreach ($data['buy']['consignees'] as $key => $value) {
-            if(!is_null($value)){
-                $this->buyConsign = 1;
-            }
+        foreach ($trade->payments as $payment) {
+            $trade->payments()->detach($payment->id);
+            $payment->delete();
         }
     }
 }
