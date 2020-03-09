@@ -2,11 +2,8 @@
 
 namespace App\Providers;
 
-use App\ChargeTruck;
-use App\Transaction;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -24,7 +21,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/';
+    public const HOME = '/home';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -33,7 +30,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Route::model('trade',Transaction::class);
+        //
+
         parent::boot();
     }
 
