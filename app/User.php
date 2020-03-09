@@ -2,6 +2,7 @@
 
 namespace App;
 
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,6 +12,10 @@ class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
+    use Uuid;
+
+    protected $keyType = 'string';
+    public $incrementing = false;
     protected $fillable = [
         'name', 'password', 'staff_id'
     ];

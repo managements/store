@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Mode extends Model
+class Mode extends IdUuid
 {
     protected $fillable = ['mode'];
     public $timestamps = false;

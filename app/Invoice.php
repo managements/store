@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Invoice extends Model
+class Invoice extends IdUuid
 {
     protected $fillable = ['nbr', 'from', 'to'];
 

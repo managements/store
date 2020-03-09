@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Claim extends Model
+class Claim extends IdUuid
 {
     protected $fillable = ["debt", "partner_id", "cheque_id", "transfer_id", "cash_id", "creator_id"];
 

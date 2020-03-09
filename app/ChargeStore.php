@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class ChargeStore extends Model
+class ChargeStore extends IdUuid
 {
     protected $fillable = ['store_id', 'creator_id'];
 

@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class AccountDetail extends Model
+class AccountDetail extends IdUuid
 {
     protected $fillable = ['label', 'detail', 'qt_enter', 'qt_out', 'db', 'cr', 'account_id'];
 

@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Bl extends Model
+class Bl extends IdUuid
 {
     protected $fillable = ['nbr', 'trade_id'];
 

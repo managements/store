@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Stock extends Model
+class Stock extends IdUuid
 {
     protected $fillable = ['qt', 'product_id', 'truck_id', 'partner_id', 'store_id'];
 

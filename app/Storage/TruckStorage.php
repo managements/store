@@ -65,21 +65,21 @@ class TruckStorage
         $this->attach_assistant($data['assistant'], $truck);
     }
 
-    private function attach_driver(int $driver, Truck $truck)
+    private function attach_driver($driver, Truck $truck)
     {
         return $truck->drivers()->create([
             'staff_id' => $driver, 'from' => now()
         ]);
     }
 
-    private function attach_assistant(int $assistant, Truck $truck)
+    private function attach_assistant( $assistant, Truck $truck)
     {
         return $truck->assistants()->create([
             'staff_id' => $assistant, 'from' => now()
         ]);
     }
 
-    private function detach_driver(int $driver_id)
+    private function detach_driver( $driver_id)
     {
         if ($driver = Driver::where([['staff_id', $driver_id], ['to', null]])->first()) {
             $driver->update([
@@ -88,7 +88,7 @@ class TruckStorage
         }
     }
 
-    private function detach_assistant(int $assistant_id)
+    private function detach_assistant( $assistant_id)
     {
         if ($assistant = Assistant::where([['staff_id', $assistant_id], ['to', null]])->first()) {
             $assistant->update([

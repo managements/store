@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Partner extends Model
+class Partner extends IdUuid
 {
     protected $fillable = [
         "provider", "account", "name", "speaker", "rc", "patent", "ice", "loss", "gain", "creator_id", 'account_id'

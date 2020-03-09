@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Assistant extends Model
+class Assistant extends IdUuid
 {
     protected $fillable = ['staff_id', 'truck_id', 'from', 'to'];
 

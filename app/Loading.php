@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Loading extends Model
+class Loading extends IdUuid
 {
     protected $fillable = ['unloading', 'valid', 'truck_id', 'partner_id'];
 

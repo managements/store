@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Trade extends Model
+class Trade extends IdUuid
 {
     protected $fillable = [
         'slug_inv', 'inv', 'ht', 'tva', 'ttc', 'partner_id',

@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Intermediate extends Model
+class Intermediate extends IdUuid
 {
     protected $fillable = ['name'];
 

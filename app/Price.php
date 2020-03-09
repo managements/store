@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Price extends Model
+class Price extends IdUuid
 {
     protected $fillable = ['buy', 'sale', 'product_id'];
 

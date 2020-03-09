@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class AccountType extends Model
+class AccountType extends IdUuid
 {
     protected $fillable = ['type'];
 

@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Truck extends Model
+class Truck extends IdUuid
 {
     protected $fillable = [
         "registered", "transporter",

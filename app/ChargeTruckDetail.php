@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class ChargeTruckDetail extends Model
+class ChargeTruckDetail extends IdUuid
 {
     protected $fillable = ['label', 'price', 'charge_id', 'charge_truck_id', 'account_detail_id'];
 

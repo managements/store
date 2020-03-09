@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Remise extends Model
+class Remise extends IdUuid
 {
     protected $fillable = ['remise', 'product_id', 'partner_id'];
 

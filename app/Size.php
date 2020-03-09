@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Size extends Model
+class Size extends IdUuid
 {
     protected $fillable = ['size'];
 
