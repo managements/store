@@ -11,17 +11,20 @@ use App\Stock;
 
 class ProviderStorage
 {
+
     private $retained = [];
+
     private $retainedTotal = 0;
+
     public function add(array $data)
     {
         // create new account
         $account = Account::create([
             'account'           => $data['name'],
-            'account_type_id'   => AccountType::where('type', 'provider')->first()->id
+            'account_type_id'   => AccountType::where('type', 'stock')->first()->id
         ]);
         // create new Provider
-        $account->partners()->create([
+        $provider = $account->partners()->create([
             "provider"      => 1,
             "account"       => $this->getAccount(),
             "name"          => $data['name'],
@@ -33,7 +36,7 @@ class ProviderStorage
         ]);
         // create new Produit products
         $stock = new StockStorage();
-        $stock->add();
+        $stock->add($provider);
     }
 
     private function getAccount()
@@ -58,18 +61,13 @@ class ProviderStorage
 
     public function account(Partner $provider)
     {
-        $account = Account::where([
-            'account'           => $provider->name,
-            'account_type_id'   => AccountType::where('type', 'provider')->first()->id
-        ])->first();
-        return $account->details;
+        return $provider->compte->details;
     }
 
     public function retained(Partner $provider)
     {
         // size
         $sizes = Size::all();
-        // data ['size'=>['qt','price']]
         foreach ($sizes as $size) {
             $products = $size->products;
             foreach ($products as $product) {
@@ -93,13 +91,9 @@ class ProviderStorage
 
     public function sold(Partner $provider)
     {
-        $account = Account::where([
-            'account'           => $provider->name,
-            'account_type_id'   => AccountType::where('type', 'provider')->first()->id
-        ])->first();
-        $cr = $account->details()->sum('cr');
-        $db = $account->details()->sum('db');
-        $sold = $db - $cr;
+        $cr = $provider->compte->details()->sum('cr');
+        $db = $provider->compte->details()->sum('db');
+        $sold = $cr - $db;
         if($sold > 0) {
             return "<span class='text-success'>$sold DB</span>";
         }

@@ -21,15 +21,23 @@ class QrStorage
     public function create(int $nbr)
     {
 
-        for ($i = 0; $i < $nbr+1; $i++){
+        for ($i = 0; $i < $nbr; $i++){
             $img = $this->add();
             $this->img[] = $img->img;
         }
-
-        return $this->download($this->img);
+        return $this->download();
     }
 
-    public function add()
+    public function get()
+    {
+        $qrCodes = Qr::where('partner_id',null)->get();
+        foreach ($qrCodes as $qrCode) {
+            $this->img[] = $qrCode->img;
+        }
+        return $this->download();
+    }
+
+    private function add()
     {
         $code = $this->getCode();
 
@@ -41,19 +49,20 @@ class QrStorage
         return $qr;
     }
 
-    public function download(array $imgs)
+    private function download()
     {
         // telecharger tous les QR Code non attaché
         $this->deleteFile();
         $zip = new ZipArchive;
         $fileName = 'qrCode.zip';
-
         if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
             $files = File::files(public_path('qr'));
             foreach ($files as $key => $value) {
-                if (in_array('qr/'.basename($value),$imgs)) {
-                    $relativeNameInZipFile = basename($value);
-                    $zip->addFile($value, $relativeNameInZipFile);
+                foreach ($this->img as $ke => $img) {
+                    if('qr/'.basename($value) === $img){
+                        $relativeNameInZipFile = basename($value);
+                        $zip->addFile($value, $relativeNameInZipFile);
+                    }
                 }
             }
             $zip->close();
@@ -63,28 +72,9 @@ class QrStorage
 
     private function deleteFile()
     {
-        if (Storage::exists(public_path() . 'qrCode.zip')) {
-            Storage::delete('qrCode.zip');
+        if (file_exists(public_path() . '/qrCode.zip')) {
+            unlink(public_path() . '/qrCode.zip');
         }
-    }
-
-    private function singleDownload(string $img)
-    {
-        // telechargé un seul QR Code
-        $this->deleteFile();
-        $zip = new ZipArchive;
-        $fileName = 'qrCode.zip';
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
-            $files = File::files(public_path('qr'));
-            foreach ($files as $key => $value) {
-                if ('qr/' . basename($value) === $img) {
-                    $relativeNameInZipFile = basename($value);
-                    $zip->addFile($value, $relativeNameInZipFile);
-                }
-            }
-            $zip->close();
-        }
-        return response()->download(public_path($fileName));
     }
 
     private function getCode()
@@ -96,18 +86,11 @@ class QrStorage
         return $this->getCode();
     }
 
-    public function issetCode($code)
+    private function issetCode($code)
     {
         if (!Qr::where('code', $code)->first()) {
             return true;
         }
         return false;
-    }
-
-    public function attach(Partner $partner, Qr $qr)
-    {
-        return $qr->update([
-            'partner_id' => $partner->id
-        ]);
     }
 }

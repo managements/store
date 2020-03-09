@@ -10,11 +10,12 @@ class CreateClaimsTable extends Migration
     {
         Schema::create('claims', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->boolean("dept")->default(0);
+            $table->boolean("debt")->default(0);
             $table->unsignedBigInteger("partner_id");
             $table->unsignedBigInteger("cheque_id")->nullable();
             $table->unsignedBigInteger("transfer_id")->nullable();
             $table->unsignedBigInteger("cash_id")->nullable();
+            $table->unsignedBigInteger("creator_id");
             $table->timestamps();
         });
     }

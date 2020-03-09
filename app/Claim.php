@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Claim extends Model
 {
-    protected $fillable = ["debt", "partner_id", "cheque_id", "transfer_id", "cash_id"];
+    protected $fillable = ["debt", "partner_id", "cheque_id", "transfer_id", "cash_id", "creator_id"];
 
     public function partner()
     {
         return $this->belongsTo(Partner::class);
     }
 
-    public function chaque()
+    public function cheque()
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Payment::class,'cheque_id');
     }
 
     public function transfer()
@@ -31,5 +31,10 @@ class Claim extends Model
     public function claim_details()
     {
         return $this->hasMany(ClaimDetail::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class,'creator_id');
     }
 }

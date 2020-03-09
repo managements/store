@@ -11,6 +11,7 @@ use App\Truck;
 
 class ChargeController extends Controller
 {
+
     public function index()
     {
         $chargeTrucks = ChargeTruck::with(['payments','truck'])->get();

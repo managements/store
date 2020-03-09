@@ -28,8 +28,13 @@ class Account extends Model
         return $this->hasOne(Truck::class,'account_charge_id');
     }
 
+    public function stock_truck()
+    {
+        return $this->hasOne(Truck::class,'account_charge_id');
+    }
+
     public function details()
     {
-        return $this->hasMany(AccountDetail::class);
+        return $this->hasMany(AccountDetail::class,'account_id');
     }
 }

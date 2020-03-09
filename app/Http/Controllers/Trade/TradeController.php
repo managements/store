@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 
 class TradeController extends Controller
 {
+
     public function index()
     {
         $transactions = Transaction::limit(50)->orderby('id','desc')->get();
@@ -29,7 +30,6 @@ class TradeController extends Controller
 
     public function store(TransactionRequest $request,TradeStorage $storage)
     {
-        // todo:: client particulier
         $request->request->add(['partner' => 1]);
         $storage->add($request->all());
         return redirect()->route('transaction.index');

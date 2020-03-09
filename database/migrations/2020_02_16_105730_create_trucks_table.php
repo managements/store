@@ -21,6 +21,7 @@ class CreateTrucksTable extends Migration
             $table->unsignedBigInteger('creator_id');
             $table->unsignedBigInteger('account_caisse_id');
             $table->unsignedBigInteger('account_charge_id');
+            $table->unsignedBigInteger('account_stock_id');
             $table->timestamps();
         });
     }

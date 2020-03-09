@@ -12,7 +12,7 @@ class CreateClaimDetailsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('claim_id');
             $table->unsignedBigInteger('trade_id');
-            $table->unsignedBigInteger("bc_nbr")->nullable();
+            $table->unsignedBigInteger("bl_nbr")->nullable();
             $table->unsignedDecimal('term');
             $table->string('inv')->nullable();
             $table->timestamps();

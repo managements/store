@@ -20,10 +20,13 @@ class BlRequest extends FormRequest
             'intermediate'      => "required|int|exists:intermediates,id",
             'transporter'       => "required|int|exists:trucks,id",
             "payments.0.price"  => [Rule::requiredIf(function () {
-                return (is_null($this->payments[1]['price']));
+                return (is_null($this->payments[1]['price']) && is_null($this->payments[2]['price']));
             })],
             "payments.1.price"          => [Rule::requiredIf(function () {
-                return (is_null($this->payments[0]['price']));
+                return (is_null($this->payments[0]['price']) && is_null($this->payments[2]['price']));
+            })],
+            "payments.2.price"          => [Rule::requiredIf(function () {
+                return (is_null($this->payments[0]['price']) && is_null($this->payments[1]['price']));
             })],
             "payments.0.operation"        => [Rule::requiredIf(function () {
                 return (!is_null($this->payments[0]['price']));

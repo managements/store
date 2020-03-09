@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Truck;
 
+use App\Account;
 use App\Assistant;
 use App\Category;
 use App\Driver;
@@ -14,7 +15,7 @@ class TruckController extends Controller
 {
     public function index()
     {
-        $trucks = Truck::all();
+        $trucks = Truck::with(['drivers.staff','assistants.staff'])->get();
         return view('truck.index',compact('trucks'));
     }
 
@@ -34,40 +35,18 @@ class TruckController extends Controller
 
     public function show(Truck $truck)
     {
-        $driver = null;
-        $assistant = null;
-        if($t = Driver::where([
-            ['to', null],
-            ['truck_id', $truck->id]
-        ])->first()){
-            $driver = $t->staff->full_name;
-        }
-        if($t = Assistant::where([
-            ['to', null],
-            ['truck_id', $truck->id]
-        ])->first()){
-            $assistant = $t->staff->full_name;
-        }
+        $account_caisse = Account::where('account', 'Caisse ' . $truck->registered)->first();
+        $account_charge = Account::where('account', 'Charge ' . $truck->registered)->first();
+        $account_stock = Account::where('account', 'Stock ' . $truck->registered)->first();
         // todo:: list of charges
-        return view('truck.show',compact('truck','driver','assistant'));
+        return view('truck.show',compact('truck','account_stock','account_charge','account_caisse'));
     }
 
     public function edit(Truck $truck)
     {
         $drivers = Category::where('category','driver')->first()->staffs;
         $assistants = Category::where('category','assistant')->first()->staffs;
-        $current_assistant = Assistant::where([
-            ['to', null],
-            ['truck_id', $truck->id]
-        ])->first();
-        $current_driver = Driver::where([
-            ['to', null],
-            ['truck_id', $truck->id]
-        ])->first();
-        return view('truck.edit',
-            compact('truck',"current_assistant","current_driver","drivers","assistants")
-        );
-
+        return view('truck.edit', compact('truck',"drivers","assistants"));
     }
 
     public function update(TruckRequest $request, Truck $truck,TruckStorage $storage)

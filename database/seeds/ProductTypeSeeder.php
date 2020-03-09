@@ -7,6 +7,7 @@ class ProductTypeSeeder extends Seeder
 {
     private $foreign;
     private $products = [];
+
     public function run()
     {
         $types = ['gaz', 'consign', 'defective', 'foreign'];

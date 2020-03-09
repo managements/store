@@ -19,6 +19,5 @@ class CreateAccountsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('accounts');
-        Schema::dropIfExists('account_truck7');
     }
 }

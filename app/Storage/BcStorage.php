@@ -3,11 +3,12 @@
 namespace App\Storage;
 
 
+use App\Account;
 use App\Bc;
+use App\Order;
+use App\Partner;
 use App\Price;
 use App\Product;
-use App\ProductType;
-use App\Size;
 use App\Stock;
 use App\Trade;
 
@@ -26,7 +27,7 @@ class BcStorage
         // BC
         $bc = $this->createBc($data,$trade);
         // orders
-        $this->orders($data['products'],$bc);
+        $this->orders($data['products'],$bc,$data['provider']);
         // stock
         $this->stock($data['provider']);
         // update Trade
@@ -65,13 +66,17 @@ class BcStorage
 
     private function subOrders(Bc $bc) {
         foreach ($bc->orders as $order) {
+            $this->subAccount($bc->orders);
             $this->ordersProducts[] = $order->product;
             $this->ordersQts[] = $order->qt;
+            // todo:: sub account
             $order->delete();
         }
     }
 
-    private function orders(array $products,Bc $bc) {
+
+    private function orders(array $products,Bc $bc,int $provider_id) {
+        $provider = Partner::find($provider_id);
         foreach ($products as $product_id => $qt) {
             if (!is_null($qt) && $qt > 0) {
                 $product = Product::find($product_id);
@@ -84,13 +89,62 @@ class BcStorage
                 $this->tva = $this->tva + $tva;
                 $ttc = $ht + $tva;
                 $this->ttc = $this->ttc + $ttc;
-                $bc->orders()->create([
+                $order = $bc->orders()->create([
                     'qt'            => $qt,
                     'ht'            => $ht,
                     'tva'           => $tva,
                     'ttc'           => $ttc,
                     'product_id'    => $product_id,
                 ]);
+                // todo:: account [stock store - provider]
+                $this->addAccount($order,$provider,$bc,$products);
+            }
+        }
+    }
+
+    private function addAccount(Order $order, Partner $provider,Bc $bc,array $products)
+    {
+        // provider
+        if ($order->product->type->type === 'gaz') {
+            $consign = Product::where([
+                ['type_id', 2],
+                ['size_id',$order->product->size_id],
+                ['partner_id',$provider->id],
+            ])->first();
+            $qt_out = $order->qt - $products[$consign->id];
+            $price = $consign->prices()->orderby('id','desc')->first();
+            $consign_price = $price->buy * $qt_out;
+            $account_store = Account::where('account','Stock Dépôt')->first();
+            $store_details = $account_store->details()->create([
+                'label'             => "BC N° " . $bc->nbr,
+                'detail'            => "Achat de Consigne " . $order->product->size->size,
+                'qt_enter',
+                'qt_out'            => $qt_out,
+                'db',
+                'cr'                => $consign_price,
+            ]);
+            $order->account_details()->attach($store_details->id);
+        }
+        else {
+            $account_provider = Account::where('account',$provider->name)->first();
+            $provider_details = $account_provider->details()->create([
+                'label'             => "BC N° " . $bc->nbr,
+                'detail'            => "Achat Consigne " . $order->product->size->size,
+                'qt_enter',
+                'qt_out'            => $order->qt,
+                'db',
+                'cr'                => $order->ttc,
+            ]);
+            $order->account_details()->attach($provider_details->id);
+        }
+    }
+
+    private function subAccount($orders)
+    {
+        foreach ($orders as $order) {
+            foreach ($order->account_details as $account_detail) {
+                $order->account_details()->detach($account_detail->id);
+                $account_detail->delete();
             }
         }
     }

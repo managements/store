@@ -23,6 +23,11 @@ class AccountDetail extends Model
         return $this->hasOne(ChargeTruckDetail::class);
     }
 
+    public function charge_store_detail()
+    {
+        return $this->hasOne(ChargeStoreDetails::class);
+    }
+
     public function tmps()
     {
         return $this->belongsToMany(Tmp::class,'account_detail_tmp');
@@ -36,5 +41,10 @@ class AccountDetail extends Model
     public function payments()
     {
         return $this->belongsToMany(Payment::class,'account_detail_payment');
+    }
+
+    public function partners()
+    {
+        return $this->belongsToMany(Partner::class,'account_detail_partner');
     }
 }

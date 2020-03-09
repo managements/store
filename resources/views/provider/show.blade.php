@@ -79,8 +79,7 @@
                 <th>Date</th>
                 <th>Libellé</th>
                 <th>Détails</th>
-                <th>QN Entre</th>
-                <th>QN Sortie</th>
+                <th>QT</th>
                 <th>Débit</th>
                 <th>Crédit</th>
             </tr>
@@ -93,7 +92,6 @@
                         <td>{{ $detail->label }}</td>
                         <td>{{ $detail->detail }}</td>
                         <td>{{ $detail->qt_out }}</td>
-                        <td>{{ $detail->qt_enter }}</td>
                         <td>{{ $detail->db }}</td>
                         <td>{{ $detail->cr }}</td>
                     </tr>

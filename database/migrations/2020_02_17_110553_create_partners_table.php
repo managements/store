@@ -12,9 +12,12 @@ class CreatePartnersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name')->comment('name of Partner');
             $table->string('speaker')->comment("Le nom du Gérant");
-            $table->string('rc');
-            $table->string('patent');
-            $table->string('ice');
+            $table->string('rc')->nullable();
+            $table->string('patent')->nullable();
+            $table->string('ice')->nullable();
+
+            $table->unsignedDecimal('gain')->default(0);
+            $table->unsignedDecimal('loss')->default(0);
 
             $table->string('account')->unique()
                 ->comment("
@@ -27,10 +30,15 @@ class CreatePartnersTable extends Migration
                 ->comment("
                 0 => Client, 
                 1 => Provider, 
-                ");
+                ")->default(0);
             $table->unsignedBigInteger('creator_id');
-            $table->unsignedBigInteger('account_id');
+            $table->unsignedBigInteger('account_id')->nullable();
             $table->timestamps();
+        });
+        Schema::create('account_detail_partner', function (Blueprint $table){
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('partner_id');
+            $table->unsignedBigInteger('account_detail_id');
         });
     }
 

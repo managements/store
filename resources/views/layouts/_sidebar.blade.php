@@ -13,6 +13,11 @@
         <!-- Start Navigation -->
         <ul class="sidebar-menu tree">
             <li class="header">Navigation</li>
+            <li>
+                <a href="{{ route('home') }}" class="btn bg-gray   text-left">
+                    <i class="fa fa-home"></i> <span>Accueil</span>
+                </a>
+            </li>
             @if(auth()->user()->is_admin)
                 <li>
                     <a href="{{ route('staff.index') }}" class="btn bg-gray text-left brclr-red">
@@ -26,8 +31,13 @@
                 </li>
             @endif
             <li>
-                <a href="{{ route('home') }}" class="btn bg-gray   text-left">
-                    <i class="fa fa-home"></i> <span>Accueil</span>
+                <a href="{{ route('provider.links') }}" class="btn bg-gray text-left brclr-red">
+                    <i class="fa fa-users"></i> <span>Fournisseurs</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('client.links') }}" class="btn bg-gray text-left brclr-red">
+                    <i class="fa fa-users"></i> <span>Client</span>
                 </a>
             </li>
             <li>
@@ -36,8 +46,13 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('provider.links') }}" class="btn bg-gray text-left brclr-red">
-                    <i class="fa fa-users"></i> <span>Fournisseurs</span>
+                <a href="{{ route('loading.links') }}" class="btn bg-gray text-left brclr-red">
+                    <i class="fa fa-users"></i> <span>Distributeurs</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('store.links') }}" class="btn bg-gray text-left brclr-red">
+                    <i class="fa fa-users"></i> <span>Gestion de Dépôt</span>
                 </a>
             </li>
             <li>
@@ -48,6 +63,11 @@
             <li>
                 <a href="{{ route('transaction.links') }}" class="btn bg-gray text-left brclr-red">
                     <i class="fa fa-users"></i> <span>Achat et Vente</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('account.links') }}" class="btn bg-gray text-left brclr-red">
+                    <i class="fa fa-users"></i> <span>Gestion des Comptes</span>
                 </a>
             </li>
         </ul>

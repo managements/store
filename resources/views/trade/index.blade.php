@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('content')
-    <div class="content container-fluid">
+    <div class="content px-5 pt-3 container-fluid">
         <div class="row">
-            <table>
+            <table class="table">
                 <thead>
                 <tr>
                     <th>date</th>

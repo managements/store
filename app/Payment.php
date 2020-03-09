@@ -28,6 +28,11 @@ class Payment extends Model
         return $this->belongsToMany(ChargeTruck::class,'charge_truck_payment');
     }
 
+    public function charge_stores()
+    {
+        return $this->belongsToMany(ChargeStore::class,'charge_store_payment','charge_store_id');
+    }
+
     public function loadings()
     {
         return $this->belongsToMany(Loading::class,'loading_payment');

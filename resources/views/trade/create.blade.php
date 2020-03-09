@@ -1,18 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container px-5 pt-3">
         <div class="bon-command-fournisseur">
             <form action="{{ route('transaction.store') }}" method="POST">
                 @csrf
                 <div class="mb-4 text-left">
-                    <p>Particulier</p>
-                    <p>Facture <span style="background: #fff;padding: 6px 15px;box-shadow: 0 3px 6px inset #00000016;border-radius: 14px"><b>70000</b></span></p>
-                </div>
+                    <p>Compte <b class="span_designed" style="display:inline-block">Particulier</b></p>
+                    <p>Facture <b class="span_designed" style="display:inline-block">1000</b></p>
+                
                 <!-- provider -->
-                <div style="max-width:595px;margin: 0 auto 20px;" class="text-left">
-                    <b>Fournisseur :</b>
-                    <select name="provider" title="Provider" id="provider" class="btn-spanen" required>
+                    Fournisseur &nbsp;
+                    <select name="provider" title="Provider" id="provider" class="btn-spanen" style="padding: 5px 18px 5px;" required>
                         @foreach($providers as $provider)
                             <option value="{{ $provider->id }}">
                                 {{ $provider->name }}
@@ -30,15 +29,14 @@
                                     <table class="table table-bordered text-center">
                                         <thead>
                                         <tr>
-                                            <th colspan="3" class="text-center">{{ $operation . ' ' . $type }}</th>
+                                            <th colspan="3" class="text-center" style="background: #53696b;">{{ $operation . ' ' . $type }}</th>
                                         </tr>
                                         </thead>
                                         <thead>
-
                                         <tr>
-                                            <th>Size</th>
-                                            <th>Quantité</th>
-                                            <th>PRIX</th>
+                                            <th class="text-center" >Size</th>
+                                            <th class="text-center" >Quantité</th>
+                                            <th class="text-center" >PRIX</th>
                                         </tr>
                                         </thead>
                                         <tbody style="background: #7cb3b9;">
@@ -46,19 +44,19 @@
                                             <tr>
                                                 <td>{{ $size }}</td>
                                                 <td>
-                                                    <input title="products" type="number" name="products[{{ $operation }}][{{ $type }}][{{ $size }}][{{ $product['product'] }}]"
-                                                           class="prices"
+                                                    <input title="products" class="btn-spanen prices" type="number" name="products[{{ $operation }}][{{ $type }}][{{ $size }}][{{ $product['product'] }}]"
                                                            data-price="{{ $product['price'] }}"
                                                            data-target="#price_{{ $size }}_{{ $brand }}_{{ $operation }}_{{ $product['product'] }}"
                                                            data-tva="{{ $product['tva'] }}">
                                                 </td>
                                                 <td><input type="number" step="0.01" id="price_{{ $size }}_{{ $brand }}_{{ $operation }}_{{ $product['product'] }}"
-                                                           class="total_ttc" disabled></td>
+                                                           class="total_ttc btn-spanen" disabled></td>
                                             </tr>
                                         @endforeach
 
                                         </tbody>
                                     </table>
+                                    <br><br>
                                     @if($errors->has('gaz'))
                                         <div class="row">
                                             <div class="col-xs-12">
@@ -82,10 +80,12 @@
                                         <td><h5>Chéque </h5></td>
                                         <td><input type="text" name="payments[0][price]" value="{{ old('payments.0.price') }}"
                                                    placeholder="montant" class="btn-spanen">
+                                        </td>
+                                        <td>
                                             <input type="text" name="payments[0][operation]" value="{{ old('payments.0.operation') }}"
-                                                   placeholder="numéro de chéque"
-                                                   class="btn-spanen">
-                                            <input type="hidden" name="payments[0][mode_id]" value="2">
+                                            placeholder="numéro de chéque"
+                                            class="btn-spanen">
+                                     <input type="hidden" name="payments[0][mode_id]" value="2">
                                         </td>
                                     </tr>
                                     @if($errors->has('payments.0.price'))
@@ -107,6 +107,8 @@
                                         <td>
                                             <input type="text" name="payments[1][price]" value="{{ old('payments.1.price') }}"
                                                    placeholder="virement" class="btn-spanen">
+                                        </td>
+                                        <td>
                                             <input type="text" name="payments[1][operation]" value="{{ old('payments.1.operation') }}"
                                                    placeholder="virement"
                                                    class="btn-spanen">
@@ -127,6 +129,36 @@
                                             </td>
                                         </tr>
                                     @endif
+                                    <tr>
+                                        <td><h5>Caisse </h5></td>
+                                        <td>
+                                            <input type="text" name="payments[2][price]" value="{{ old('payments.2.price') }}"
+                                                   placeholder="Caisse" class="btn-spanen">
+                                            <input type="hidden" name="payments[2][mode_id]" value="1">
+                                        </td>
+                                    </tr>
+                                    @if($errors->has('payments.2.operation'))
+                                        <tr>
+                                            <td colspan="2">
+                                                <span class="text-danger">{{ $errors->first('payments.2.operation') }}</span>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    <tr>
+                                        <td><h5>a terme </h5></td>
+                                        <td>
+                                            <input type="text" name="payments[3][price]" value="{{ old('payments.3.price') }}"
+                                                   placeholder="a terme" class="btn-spanen">
+                                            <input type="hidden" name="payments[3][mode_id]" value="4">
+                                        </td>
+                                    </tr>
+                                    @if($errors->has('payments.3.operation'))
+                                        <tr>
+                                            <td colspan="2">
+                                                <span class="text-danger">{{ $errors->first('payments.3.operation') }}</span>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 </table>
                             </div>
                         </div>
@@ -142,7 +174,7 @@
                         <div>
                             <table class="table-no-border" style="margin:0 0 0 auto;">
                                 <tr>
-                                    <td style="padding: 10px 0;"><b>TOTAL TTC</b></td>
+                                    <td style="padding: 10px 0;"><b>TOTAL TTC</b> &nbsp;&nbsp; </td>
 
                                     <td><input type="text" name="ttc" id="ttc"
                                                placeholder="TTC" value="{{ ' 0 MAD' }}"
@@ -161,53 +193,82 @@
 
 @push('scripts')
 <script>
-    (function () {
-        function ttc() {
-            var $total_ttc = 0;
-            $('.total_ttc').each(function () {
-                if ($(this).val().length > 0) {
-                    $total_ttc = parseInt($(this).val()) + parseInt($total_ttc)
-                }
-            })
-            $('#ttc').val($total_ttc.toFixed(2) + ' MAD')
+$(function () {
+    // operations
+    $('#check1').change(function () {
+        if ($('#tablecheckboxs tr .check1').css('display') == 'none'){
+            $('#tablecheckboxs tr .check1').fadeIn(0);
         }
-
-        function consign() {
-            $('.consign').each(function () {
-                $(this).hide();
-            });
-            $('.qt_consign').each(function () {
-                $(this).val('');
-            });
-            var $provider = $('#provider').val();
-            $('#consign_' + $provider).show(950);
-            $('#def_' + $provider).show(950);
+        else{
+            if (!this.checked) {
+             $('#tablecheckboxs tr .check1').fadeOut(0);
+            }
         }
+    });
 
-        function prices() {
-            $('.prices').each(function () {
-                var $price = $(this).attr('data-price');
-                var $tva = $(this).attr('data-tva');
-                var $qt = $(this).val()
-                var $ht = parseInt($price * $qt)
-                var $ttc = ($ht * $tva / 100) + $ht
-                var $target = $(this).attr('data-target');
-                $($target).val($ttc);
-            })
+    $('#check2').change(function () {
+        if ($('#tablecheckboxs tr .check2').css('display') == 'none'){
+            $('#tablecheckboxs tr .check2').fadeIn(0);
         }
-        consign()
-        prices()
-        ttc()
-        var $body = $('body');
-        $body.on('change', '#provider', function () {
-            consign()
-            ttc()
-        })
+        else{
+            if (!this.checked) {
+             $('#tablecheckboxs tr .check2').fadeOut(0);
+            }
+        }
+    });
 
-        $body.on('change', ".prices", function () {
-            prices()
-            ttc()
-        })
-    })(jQuery)
+    $('#check3').change(function () {
+        if ($('#tablecheckboxs tr .check3').css('display') == 'none'){
+            $('#tablecheckboxs tr .check3').fadeIn(0);
+        }
+        else{
+            if (!this.checked) {
+             $('#tablecheckboxs tr .check3').fadeOut(0);
+            }
+        }
+    });
+
+    //sizes 
+    $('#check4').change(function () {
+        if ($('#tablecheckboxs tr.check4').css('display') == 'none'){
+            $('#tablecheckboxs tr.check4').fadeIn(0);
+        }
+        else{
+            if (!this.checked) {
+             $('#tablecheckboxs tr.check4').fadeOut(0);
+            }
+        }
+    });
+    $('#check5').change(function () {
+        if ($('#tablecheckboxs tr.check5').css('display') == 'none'){
+            $('#tablecheckboxs tr.check5').fadeIn(0);
+        }
+        else{
+            if (!this.checked) {
+             $('#tablecheckboxs tr.check5').fadeOut(0);
+            }
+        }
+    });
+    $('#check6').change(function () {
+        if ($('#tablecheckboxs tr.check6').css('display') == 'none'){
+            $('#tablecheckboxs tr.check6').fadeIn(0);
+        }
+        else{
+            if (!this.checked) {
+             $('#tablecheckboxs tr.check6').fadeOut(0);
+            }
+        }
+    });
+    $('#check7').change(function () {
+        if ($('#tablecheckboxs tr.check7').css('display') == 'none'){
+            $('#tablecheckboxs tr.check7').fadeIn(0);
+        }
+        else{
+            if (!this.checked) {
+             $('#tablecheckboxs tr.check7').fadeOut(0);
+            }
+        }
+    });
+});
 </script>
 @endpush

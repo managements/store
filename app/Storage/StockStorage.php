@@ -13,20 +13,18 @@ class StockStorage
 {
     private $createdProducts = [];
 
-
-    public function add()
+    public function add($provider)
     {
-        $this->addProduct();
-        $this->addStock($this->createdProducts);
+        $this->addProduct($provider);
+        $this->addStock($this->createdProducts,$provider);
+        $this->addDiscount($this->createdProducts);
     }
 
-    private function addProduct()
+    private function addProduct($provider)
     {
         $sizes = Size::all();
-        $providers = Partner::where('provider',1)->get();
         $types = ProductType::where('type','!=', 'foreign')->get();
         foreach ($sizes as $size) {
-            foreach ($providers as $provider) {
                 foreach ($types as $type) {
                     $product = $size->products()->create([
                         'type_id'       => $type->id,
@@ -39,29 +37,42 @@ class StockStorage
                     ]);
                     $this->createdProducts[] = $product;
                 }
-            }
         }
     }
 
-    private function addStock($products)
+    private function addStock($products,$provider)
     {
         $trucks = Truck::all();
-        $providers = Partner::where('provider',1)->get();
         foreach ($products as $product) {
+            // store
             $product->stocks()->create([
                 'store_id' => 1,
                 'qt'        => 0
             ]);
-            foreach ($providers as $provider) {
-                $product->stocks()->create([
-                    'partner_id' => $provider->id,
-                    'qt'        => 0
-                ]);
-            }
+            // provider
+            $product->stocks()->create([
+                'partner_id' => $provider->id,
+                'qt'        => 0
+            ]);
+            // trucks
             foreach ($trucks as $truck) {
                 $product->stocks()->create([
                     'truck_id'  => $truck->id,
                     'qt'        => 0
+                ]);
+            }
+        }
+    }
+
+    private function addDiscount($products)
+    {
+        $clients = Partner::where('provider',0)->get();
+        foreach ($clients as $client) {
+            foreach ($products as $product) {
+
+                $client->remises()->create([
+                    'remise'    => 0,
+                    'product_id' => $product->id
                 ]);
             }
         }

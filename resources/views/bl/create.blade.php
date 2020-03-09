@@ -151,6 +151,21 @@
                                             </td>
                                         </tr>
                                     @endif
+                                    <tr>
+                                        <td><h5>a terme </h5></td>
+                                        <td>
+                                            <input type="text" name="payments[2][price]" value="{{ old('payments.2.price') }}"
+                                                   placeholder="a terme" class="btn-spanen">
+                                            <input type="hidden" name="payments[2][mode_id]" value="4">
+                                        </td>
+                                    </tr>
+                                    @if($errors->has('payments.1.price'))
+                                        <tr>
+                                            <td colspan="2">
+                                                <span class="text-danger">{{ $errors->first('payments.1.price') }}</span>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 </table>
                             </div>
                         </div>

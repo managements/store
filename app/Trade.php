@@ -7,8 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Trade extends Model
 {
     protected $fillable = [
-        'slug_inv', 'inv', 'ht', 'tva', 'ttc', 'partner_id', 'intermediate_id', 'truck_id', 'creator_id', 'created_at'
+        'slug_inv', 'inv', 'ht', 'tva', 'ttc', 'partner_id',
+        'intermediate_id', 'truck_id', 'creator_id', 'created_at'
     ];
+
+    public function getTermAttribute()
+    {
+        return $this->payments()->where('mode_id',4)->sum('price');
+    }
+
 
     public function account_details()
     {

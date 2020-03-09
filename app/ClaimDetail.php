@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClaimDetail extends Model
 {
-    protected $fillable = ['claim_id', 'trade_id', 'bc_nbr', 'inv', 'term'];
+    protected $fillable = ['claim_id', 'trade_id', 'bl_nbr', 'inv', 'term'];
 
     public function claim()
     {

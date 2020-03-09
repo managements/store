@@ -24,9 +24,9 @@ class Partner extends Model
         return $this->belongsTo(User::class,'creator_id');
     }
 
-    public function account()
+    public function compte()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Account::class,'account_id');
     }
 
     public function products()
@@ -52,5 +52,15 @@ class Partner extends Model
     public function claims()
     {
         return $this->hasMany(Claim::class);
+    }
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    public function account_details()
+    {
+        return $this->belongsToMany(AccountDetail::class,'account_detail_partner');
     }
 }

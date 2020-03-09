@@ -559,7 +559,6 @@ table .btn.btn-m-blue:before{
 }
 
 .bon-command-fournisseur table{
-    max-width: 600px;
     margin: 0 auto;
 }
 .bon-command-fournisseur table tr td:first-of-type, .bon-command-fournisseur table tr th:first-of-type{
@@ -881,7 +880,33 @@ input[type="date"]::-webkit-inner-spin-button,
 input[type="date"]::-webkit-clear-button { display: none; }
 
 
-
+.checkboxx-sfag{
+    padding: 5px;
+    margin-bottom: 15px;
+    float: none;
+    width: 100%;
+}
+.checkboxx-sfag label{
+    margin-bottom: 0;
+    color: #7f7f7f;
+}
+.checkboxx-sfag input{
+    position: relative;
+    top: 2px;
+}
+.checkboxx-sfag span.span_designed{
+    display:inline-block;
+}
+.tbodyventeboittle{
+    background: #7cb3b9;
+    text-align: center;
+}
+table .tbodyventeboittle tr td{
+    text-align: center !important;
+}
+#tablecheckboxs tr .check2, #tablecheckboxs tr .check3{
+    display: none;
+}
 /* ============================== media ============================ */
 @media (min-width: 700px){
     .modal-dialog {

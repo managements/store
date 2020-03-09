@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $fillable = ['sale_id', 'buy_id'];
+    protected $fillable = ['sale_id', 'buy_id','created_at'];
 
     public function getTotalPriceAttribute()
     {

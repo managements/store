@@ -54,4 +54,13 @@ class User extends Authenticatable
         return $this->hasMany(Trade::class,'creator_id');
     }
 
+    public function created_claims()
+    {
+        return $this->hasMany(Claim::class,'creator_id');
+    }
+    public function created_store_charges()
+    {
+        return $this->hasMany(Claim::class,'creator_id');
+    }
+
 }

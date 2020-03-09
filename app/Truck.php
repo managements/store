@@ -10,9 +10,26 @@ class Truck extends Model
         "registered", "transporter",
         "lat", "lang", "cash", "cheque",
         "assurance", "visit_technique",
-        'account_caisse_id', 'account_charge_id',
+        'account_caisse_id', 'account_charge_id', 'account_stock_id',
         "creator_id"
     ];
+
+    public function getDriverAttribute()
+    {
+        if($driver = $this->drivers()->where('to', null)->first()) {
+            return $driver->staff->full_name;
+        }
+        return null;
+    }
+
+    public function getAssistantAttribute()
+    {
+        if($assistant = $this->assistants()->where('to', null)->first()) {
+            return $assistant->staff->full_name;
+        }
+        return null;
+    }
+
     public function trades()
     {
         return $this->hasMany(Trade::class);
@@ -41,6 +58,11 @@ class Truck extends Model
     public function account_charge()
     {
         return $this->belongsTo(Account::class,'account_charge_id');
+    }
+
+    public function account_stock()
+    {
+        return $this->belongsTo(Account::class,'account_stock_id');
     }
 
     public function charge_trucks()

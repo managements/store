@@ -10,7 +10,7 @@ class CreateRemisesTable extends Migration
     {
         Schema::create('remises', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('remise');
+            $table->unsignedDecimal('remise');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('partner_id');
             $table->timestamps();
